@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Install React</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script>
+        class MyHead extends React.Component {
+            render() {
+                // console.log(this.props.level)
+                return React.createElement("H" + this.props.level, null, "崩╰(〒皿〒)╯潰");
+            }
+        }
+
+        // 設計新的組件
+        class MyHeadList extends React.Component {
+            //為 MyHead 建立一個建構式，給他狀態
+            constructor(props) {
+                //建構式接受外部傳的屬性當參數，一定要先呼叫父類別的建構式
+                //一定要傳屬性的參數進去
+                super(props);
+                //初始化狀態
+                this.state = {
+                    maxLevel: props.start //下方的 props
+                };
+            }
+
+            //設定排程最好的時機在初始化後
+            componentWillMount() { //組件將要繪製前的時刻
+                //設定一個排成 id => this.intervalId
+                this.intervalId = window.setInterval(() => {
+                    //每秒鐘執行這裡的邏輯
+                    this.setState((currentState, currentProps) => {
+                        if (currentState.maxLevel > currentProps.end) {
+                            //不要更新還是要 return
+                            return currentState;
+                        } else { //maxLevel + 1
+                            return {
+                                maxLevel: currentState.maxLevel + 1
+                            };
+                        }
+                    });
+                }, 1000);
+
+            }
+
+            componentWillUnmount() { //組建要刪除前的時刻
+                //把排程刪除
+                window.clearInterval(this.intervalId);
+            }
+
+            //     window.setTimeout(() => {
+            //         //     // 2 秒後執行程式碼
+            //         //     this.setState({
+            //         //         maxLevel: 3
+            //         //     });
+            //         // }, 2000);
+
+            //         //當前 state 與等等的有關聯
+            //         this.setState((currentState, currentProps) => ({
+            //             maxLevel: currentState.maxLevel + 1
+            //         }));
+            //     }, 2000);
+
+            // }
+            render() {
+                // 把 5 個 MyHead 放進來，用陣列處理
+                let heads = [];
+                let head;
+                //i 利用 state 動態調整
+                for (let i = 1; i < this.state.maxLevel; i++) {
+                    //產生 MyHead 物件，屬性設定成 i
+                    head = React.createElement(MyHead, {
+                        level: i
+                    });
+                    //做出來放進陣列
+                    heads.push(head);
+                }
+                return React.createElement("DIV", null, heads);
+            }
+        }
+
+
+        window.addEventListener("load", () => {
+            // 1.建立自訂的 React 組件實體 
+            //在MyHeadList 可以給他一個屬性，讓他從哪跑到哪，這個 props 會傳到上方 MyHeadList 的 props
+            let myComponent = React.createElement(MyHeadList, {
+                start: 2,
+                end: 100
+            });
+            // 2. 將建立好的組件華道容器中
+            ReactDOM.render(myComponent, document.body);
+        });
+    </script>
+
+    <!-- <script>
+        // React 和 ReactDOM 這兩個物件，是 React 套件的核心物件
+        console.log("React: ", React);
+        console.log("ReactDOM: ", ReactDOM);
+    </script>
+    <script>
+        window.addEventListener("load", () => {
+            //1. 建立型態為 H1 的 React Element. 並且包含文字 Hello World (文字也是一種子元件)
+            // 相當於 <h1>Hello World</h1>
+            let reactElement = React.createElement("H1", null, "Hello World");
+
+
+            //2.建立好的 React Elemtn 畫到容器中，這裡的容器使用 HTML Body Element
+
+            ReactDOM.render(
+                reactElement, document.body
+            );
+
+        });
+    </script> -->
+
+</head>
+
+<body>
+</body>
+
+</html>
